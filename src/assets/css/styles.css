@@ -16,6 +16,11 @@ body{
     background: white;
     border-radius: 10px;
   }
+
+  .loader {
+    background: none;
+    text-align: center;
+  }
   
   .center h1{
     text-align: center;
@@ -129,19 +134,23 @@ body{
     color: #666666;
   }
 
-  .income_box{
+  .income_box, .expense_box{
     margin: 30px 0;
     text-align: center;
   }
 
-  .income_box label {
+  .income_box label, .expense_box label {
     font-size: 16px;
     color: #666666;
     margin: 0 10px;
   }
 
-  .income_box input[type="number"] {
+  .income_box input[type="number"], .expense_box input[type="number"], .expense_box input[type="text"] {
     height: 25px;
+  }
+
+  .expense_box div {
+    margin: 20px 0;
   }
 
   .income_buttons {
@@ -188,3 +197,39 @@ body{
   .notFoundButton a {
     text-decoration: none;
   }
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .prev-button, .next-button {
+    padding: 10px;
+    background-color: #eaeaea;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+  }
+  
+  table th,
+  table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  table tr:hover {
+    background-color: #f5f5f5;
+  }  

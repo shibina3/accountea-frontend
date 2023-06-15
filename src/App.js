@@ -2,9 +2,11 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Income from "./pages/Income";
+import AddIncome from "./pages/AddIncome";
 import PageNotFound from "./pages/PageNotFound";
 import "./assets/css/styles.css"
+import AddExpenditure from "./pages/AddExpenditure";
+import ViewExpenditure from "./pages/ViewExpenditure";
 
 function App() {
   return (
@@ -12,7 +14,9 @@ function App() {
       <Routes>
         <Route index path="/" element={<Login /> } />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/income/add" element={<Income />} />
+        <Route path="/income/add" element={<AddIncome />} />
+        <Route path="/expenditure/add" element={<AddExpenditure />} />
+        <Route path="/expenditure/view" element={<ViewExpenditure />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>

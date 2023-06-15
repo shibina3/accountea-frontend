@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 
-export default function Income() {
+export default function AddIncome() {
     const amount = useRef(null);
     const submitPayment = async (event) => {
         event.preventDefault();
@@ -8,23 +8,26 @@ export default function Income() {
             if(amount.current.value === ''){
                  alert('Please enter an amount')
             } else {
-                const response = await fetch('/api/income/add', {
+                await fetch(`${process.env.REACT_APP_BACKEND_URL}/income/add`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
                     },
                     body: JSON.stringify({
                         amount: amount.current.value,
                         payment_type: event.target.getAttribute('payment_type')
                     })
                 })
-
-                if(response.status === 200){
+                .then(response => response.json())
+                .then(data => {
+                  if(data.status){
                     alert('Payment added successfully')
                     amount.current.value = ''
-                } else {
-                    console.error('Error submitting data:',response.status)
-                }
+                  } else {
+                    alert('Failed to add Payment!');
+                  }
+                })
             }
         } catch (e) {
             console.error('Error submitting data:',e.message);
