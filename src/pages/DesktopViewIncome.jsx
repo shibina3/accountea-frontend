@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react'
-import TablePagination from '../components/MobileTablePagination'
+import React, { useState, useEffect } from 'react'
+import TablePagination from '../components/DesktopTablePagination'
 
 export default function ViewExpenditure() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    const [transId, setTransId] = useState(0);
-    const editAmount = useRef(null);
-    const modalRef = useRef(null);
+    const [save, setSave] = useState([]);
     const tableHead = ['Income Id', 'Amount', 'Date'];
 
     useEffect(() => {
@@ -53,25 +51,25 @@ export default function ViewExpenditure() {
     }, [])
 
     const editTableRow = (event) => {
-        let trans_id = parseInt(event.target.closest('tr').getAttribute('id')),
-        editData = data.filter((item) => item.trans_id === trans_id)[0];
-        setTransId(trans_id);
-        modalRef.current.style.display = 'block';
-        editAmount.current.value = editData.amount;
+        Array.from(event.target.closest('tr').children).map((child) => {
+            let eventID = event.target.closest('tr').getAttribute('id')
+            if(child.getAttribute('data-editable') == 'true') {
+                child.setAttribute('contenteditable', true);
+                child.focus();
+                if(!save.includes(parseInt(eventID))){ setSave([...save, parseInt(eventID)])}
+            } 
+        })
+
     }
 
-    const updateIncome = () => {
-        fetch(`${process.env.REACT_APP_BACKEND_URL}/expenditure/edit/${transId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                trans_id: transId,
-                amount: editAmount.current.value,
-                timestamp: new Date()
+    const saveEditedData = (event) => {
+        let eventID = event.target.closest('tr').getAttribute('id')
+        setSave(save.filter((item) => item != parseInt(eventID)));
+            Array.from(event.target.closest('tr').children).map((child) => {
+                if(child.getAttribute('data-editable') == 'true') {
+                    child.setAttribute('contenteditable', false);
+                } 
             })
-        })
     }
 
   return (
@@ -79,34 +77,16 @@ export default function ViewExpenditure() {
         {
             loading ? <div className='center loader'>Loading...</div> 
             : error ? <div className='center loader'>Error fetching data!</div> 
-            : <div className='center table_center'>
+            : <div className='center'>
                 <TablePagination 
                 tableHead={tableHead} 
                 data={data} 
                 itemsPerPage={10}
-                editTableRow={editTableRow} />
+                editTableRow={editTableRow}
+                isSaveEnabled={save}
+                saveEditedData={saveEditedData} />
               </div>
         }
-        <div className='modal' ref={modalRef}>
-                <div className='modal-content'>
-                    <div className='modal-header'>
-                        <span className='close' onClick={() => modalRef.current.style.display = 'none'}>&times;</span>
-                        <h3>Edit Expenditure</h3>
-                    </div>
-                    <div className='modal-body'>
-                        <form>
-                            <div className='txt_field'>
-                                <input type='number' ref={editAmount} required />
-                                <span></span>
-                                <label>Amount</label>
-                            </div>
-                            <div className='modal-footer'>
-                                <input type='submit' onClick={updateIncome} value='Update' />
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div> 
     </>
   )
 }
